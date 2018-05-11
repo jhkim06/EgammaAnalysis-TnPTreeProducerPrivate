@@ -112,7 +112,7 @@ options['DEBUG']                = cms.bool(False)
 options['isMC']                 = cms.bool(False)
 options['UseCalibEn']           = varOptions.calibEn
 
-options['addSUSY']               = cms.bool(True)
+options['addSUSY']               = cms.bool(False)
 if options['useAOD']: 
     options['addSUSY']               = cms.bool(False)
 

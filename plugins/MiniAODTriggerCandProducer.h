@@ -103,6 +103,14 @@ template <class T, class U>
   iEvent.getByToken(triggerObjects_, triggerObjects);
   iEvent.getByToken(inputs_, inputs);
 
+  // add unpack for > 92x
+  std::vector<pat::TriggerObjectStandAlone> unpackedObjs;
+  for(auto& trigObj : *triggerObjects.product()){
+    unpackedObjs.push_back(trigObj);
+    unpackedObjs.back().unpackFilterLabels(iEvent,*triggerBits);
+  }
+
+
   // Create the output collection
   std::unique_ptr<TRefVector> outColRef(new TRefVector);
   
@@ -117,19 +125,47 @@ template <class T, class U>
     init(*triggerBits, triggerNames);
   } 
 
+   //edm::Handle<edm::TriggerResults> trigResults;
+   //iEvent.getByToken(triggerBits_, trigResults);
+   //if( !trigResults.failedToGet() ) {
+   //  int N_Triggers = trigResults->size();
+   //  const edm::TriggerNames & trigName = iEvent.triggerNames(*trigResults);
+
+   //  for( int i_Trig = 0; i_Trig < N_Triggers; ++i_Trig ) {
+   //    if (trigResults.product()->accept(i_Trig)) {
+   //      TString TrigPath =trigName.triggerName(i_Trig);
+   //            std::cout << "Passed path: " << TrigPath<< std::endl;
+   //      if(TrigPath.Index("HLT_DoubleEle25_CaloIdL_MW_v2") >=0) std::cout << "trigger passed!" << std::endl;;
+   //      //Notice the special syntax: since the path version can change during data taking one only looks for the string "HLT_IsoMu27_v"
+   //    }
+   //  }
+   //}
+
   for (size_t i=0; i<inputs->size(); i++) {
     bool saveObj = true;
     TRef ref = (*inputs)[i];
     //std::cout << typeof(triggerObjects.product()) << std::endl;
+    //std::cout << "filter size: " << filterNames_.size() << std::endl;
     if (filterNames_.size() > 0) {
-      saveObj = onlineOfflineMatching(ref, triggerObjects.product(), filterNames_[0], dRMatch_,triggerBits,triggerNames,iEvent);
-      
+      //saveObj = onlineOfflineMatching(ref, triggerObjects.product(), filterNames_[0], dRMatch_,triggerBits,triggerNames,iEvent);
+      saveObj = onlineOfflineMatching(ref, &unpackedObjs, filterNames_[0], dRMatch_, triggerBits,triggerNames,iEvent);
+       
+      //std::cout << "first filterName: " << filterNames_[0] << std::endl;
       for (size_t f=1; f<filterNames_.size(); f++) {
-	if (isAND_)
-	  saveObj = (saveObj && onlineOfflineMatching(ref, triggerObjects.product(), filterNames_[f], dRMatch_,triggerBits,triggerNames,iEvent));
-	else
-	  saveObj = (saveObj || onlineOfflineMatching(ref, triggerObjects.product(), filterNames_[f], dRMatch_,triggerBits,triggerNames,iEvent));
+	if (isAND_){
+	  //saveObj = (saveObj && onlineOfflineMatching(ref, triggerObjects.product(), filterNames_[f], dRMatch_,triggerBits,triggerNames,iEvent));
+          saveObj = (saveObj && onlineOfflineMatching(ref, &unpackedObjs, filterNames_[f], dRMatch_,triggerBits,triggerNames,iEvent));
+          //if(filterNames_.size() > 1)
+            //std::cout << "filterNames: " << filterNames_[f] << " pass or not: " << saveObj << std::endl;
+        }
+          
+	else{
+	  //saveObj = (saveObj || onlineOfflineMatching(ref, triggerObjects.product(), filterNames_[f], dRMatch_,triggerBits,triggerNames,iEvent));
+          saveObj = (saveObj || onlineOfflineMatching(ref, &unpackedObjs, filterNames_[f], dRMatch_, triggerBits,triggerNames,iEvent));
+          //std::cout << f << " th filterName: " << filterNames_[f] << std::endl;
+        }
       } 
+      if(filterNames_[0] == "") saveObj = true;
     }
 
     if (saveObj)

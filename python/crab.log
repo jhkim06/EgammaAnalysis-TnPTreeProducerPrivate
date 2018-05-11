@@ -1,0 +1,74 @@
+DEBUG 2018-05-02 08:36:27,661: 	 Executing command: 'status'
+DEBUG 2018-05-02 08:36:27,662: 	 Found CRAB cache file /afs/cern.ch/user/j/jhkim/.crab3
+ERROR 2018-05-02 08:36:27,662: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/j/jhkim/CMSSW/CMSSW_9_4_6/src/EgammaAnalysis/TnPTreeProducer/python/crab_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_data_tnpNtuple
+ERROR 2018-05-02 08:36:27,662: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 39, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 1017, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 580, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 441, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/j/jhkim/CMSSW/CMSSW_9_4_6/src/EgammaAnalysis/TnPTreeProducer/python/crab_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_data_tnpNtuple
+DEBUG 2018-05-02 08:36:46,478: 	 Executing command: 'status'
+DEBUG 2018-05-02 08:36:46,479: 	 Found CRAB cache file /afs/cern.ch/user/j/jhkim/.crab3
+ERROR 2018-05-02 08:36:46,479: 	 Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/j/jhkim/CMSSW/CMSSW_9_4_6/src/EgammaAnalysis/TnPTreeProducer/python/crab_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_data_tnpNtuple
+ERROR 2018-05-02 08:36:46,479: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 39, in __init__
+    SubCommand.__init__(self, logger, cmdargs)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 262, in __init__
+    self.validateOptions()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/status.py", line 1017, in validateOptions
+    SubCommand.validateOptions(self)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 580, in validateOptions
+    self.loadLocalCache()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 441, in loadLocalCache
+    raise ex
+CachefileNotFoundException: Cannot find .requestcache file in CRAB project directory /afs/cern.ch/work/j/jhkim/CMSSW/CMSSW_9_4_6/src/EgammaAnalysis/TnPTreeProducer/python/crab_HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_data_tnpNtuple
+DEBUG 2018-05-03 07:06:28,029: 	 Executing command: 'submit'
+DEBUG 2018-05-03 07:06:28,030: 	 Found CRAB cache file /afs/cern.ch/user/j/jhkim/.crab3
+DEBUG 2018-05-03 07:06:28,047: 	 Checking credentials
+DEBUG 2018-05-03 07:06:28,048: 	 Found proxy file /tmp/x509up_u59813
+DEBUG 2018-05-03 07:06:28,048: 	 Getting proxy life time left
+DEBUG 2018-05-03 07:06:29,157: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u59813 -timeleft
+ output : 171236
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-03 07:06:30,072: 	 Executing : 
+ command : voms-proxy-info -file /tmp/x509up_u59813 -actimeleft
+ output : 171234
+
+ error: 
+ retcode : 0
+DEBUG 2018-05-03 07:06:30,072: 	 Proxy valid for 47:33:56 hours
+ERROR 2018-05-03 07:06:30,072: 	 CRAB configuration file crabConfig.py not found.
+ERROR 2018-05-03 07:06:30,072: 	 Caught exception
+Traceback (most recent call last):
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 160, in <module>
+    client()
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/bin/crab", line 146, in __call__
+    self.cmd = sub_cmd(self.logger, args[1:])
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/submit.py", line 34, in __init__
+    SubCommand.__init__(self, logger, cmdargs, disable_interspersed_args=True)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 303, in __init__
+    self.loadConfig(self.options.config, self.args)
+  File "/cvmfs/cms.cern.ch/crab3/slc6_amd64_gcc493/cms/crabclient/3.3.1805/lib/python2.7/site-packages/CRABClient/Commands/SubCommand.py", line 46, in loadConfig
+    raise ConfigurationException("CRAB configuration file %s not found." % (configname))
+ConfigurationException: CRAB configuration file crabConfig.py not found.
+DEBUG 2018-05-04 04:09:29,767: 	 Executing command: 'submit'
+DEBUG 2018-05-04 04:09:29,768: 	 Found CRAB cache file /afs/cern.ch/user/j/jhkim/.crab3

@@ -25,6 +25,24 @@ bool MiniAODTriggerCandProducer<reco::GsfElectron, trigger::TriggerObject>::onli
   return false;
 }
 
+// copied from CMSSW_9_2_12
+template <>
+bool MiniAODTriggerCandProducer<pat::Electron, trigger::TriggerObject>::onlineOfflineMatchingRECO(pat::ElectronRef ref,
+                                                                                                  const std::vector<trigger::TriggerObject>* triggerObjects,
+                                                                                                  const trigger::Keys* keys, float dRmin) {
+
+  for (const auto & key : *keys) {
+    float dR = deltaR2(ref->superCluster()->position().eta(), ref->superCluster()->position().phi(),
+                       (*triggerObjects)[key].eta(), (*triggerObjects)[key].phi());
+    //std::cout << "dr" << dR << std::endl;
+    if (dR < dRmin*dRmin) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 template <>
 MiniAODTriggerCandProducer<reco::GsfElectron, trigger::TriggerObject>::MiniAODTriggerCandProducer(const edm::ParameterSet& iConfig ):
   filterNames_(iConfig.getParameter<std::vector<std::string> >("filterNames")),
@@ -116,6 +134,95 @@ void MiniAODTriggerCandProducer<reco::GsfElectron, trigger::TriggerObject>::prod
   iEvent.put(std::move(outColRef));
 }
 
+// for miniaod
+template <>
+MiniAODTriggerCandProducer<pat::Electron, trigger::TriggerObject>::MiniAODTriggerCandProducer(const edm::ParameterSet& iConfig ):
+  filterNames_(iConfig.getParameter<std::vector<std::string> >("filterNames")),
+  inputs_(consumes<TRefVector>(iConfig.getParameter<edm::InputTag>("inputs"))),
+  triggerBits_(consumes<edm::TriggerResults>(iConfig.getParameter<edm::InputTag>("bits"))),
+  //triggerObjects_(consumes<pat::TriggerObjectStandAloneCollection>(iConfig.getParameter<edm::InputTag>("objects"))),
+  //triggerObjects_(consumes<U>(iConfig.getParameter<edm::InputTag>("objects"))),
+  triggerEvent_(consumes<trigger::TriggerEvent>(iConfig.getParameter<edm::InputTag>("objects"))),
+  dRMatch_(iConfig.getParameter<double>("dR")),
+  isAND_(iConfig.getParameter<bool>("isAND")) {
+
+  produces<TRefVector>();
+}
+template <>
+void MiniAODTriggerCandProducer<pat::Electron, trigger::TriggerObject>::produce(edm::Event &iEvent, const edm::EventSetup &eventSetup) {
+
+  edm::Handle<edm::TriggerResults> triggerBits;
+  edm::Handle<trigger::TriggerEvent> trEv;
+  iEvent.getByToken(triggerEvent_, trEv);
+  const trigger::TriggerObjectCollection& triggerObjects(trEv->getObjects());
+
+  edm::Handle<TRefVector> inputs;
+  iEvent.getByToken(triggerBits_, triggerBits);
+  iEvent.getByToken(inputs_, inputs);
+
+  // Create the output collection
+  std::unique_ptr<TRefVector> outColRef(new TRefVector);
+
+  if (!triggerBits.isValid()) {
+    LogDebug("") << "TriggerResults product not found - returning result=false!";
+    return;
+  }
+
+  const edm::TriggerNames & triggerNames = iEvent.triggerNames(*triggerBits);
+  if (triggerNamesID_ != triggerNames.parameterSetID()) {
+    triggerNamesID_ = triggerNames.parameterSetID();
+    init(*triggerBits, triggerNames);
+  }
+
+  for (size_t i=0; i<inputs->size(); i++) {
+    bool saveObj = true;
+    TRef ref = (*inputs)[i];
+
+        //std::cout << "REF:" << ref->eta() << " " << ref->phi() << " " << ref->et() << std::endl;
+    if (filterNames_.size() > 0) {
+      unsigned int moduleFilterIndex = 9999;
+      if (filterNames_[0] != "") {
+        //std::cout << "DIVERSO DA 0" << std::endl;
+        for (int i=0;i<trEv->sizeFilters(); i++) {
+          //std::cout << "filters in mc: " << trEv->filterLabel(i) << std::endl;
+          if (trEv->filterLabel(i) == filterNames_[0]) {
+            moduleFilterIndex = i;
+            //std::cout << "myIndex:" << i << std::endl;
+            break;
+          }
+        }
+        if (moduleFilterIndex+1 > trEv->sizeFilters())
+          saveObj = false;
+        else {
+          const trigger::Keys &keys = trEv->filterKeys( moduleFilterIndex );
+          saveObj = onlineOfflineMatchingRECO(ref, &triggerObjects, &keys, dRMatch_);
+        }
+      }
+      for (size_t f=1; f<filterNames_.size(); f++) {
+        if (filterNames_[f] != "") {
+          unsigned int moduleFilterIndex = trEv->filterIndex(filterNames_[f]);
+          if (moduleFilterIndex+1 > trEv->sizeFilters())
+            saveObj = false;
+          else {
+            const trigger::Keys &keys = trEv->filterKeys( moduleFilterIndex );
+            if (isAND_)
+              saveObj = (saveObj && onlineOfflineMatchingRECO(ref, &triggerObjects, &keys, dRMatch_));
+            else
+              saveObj = (saveObj || onlineOfflineMatchingRECO(ref, &triggerObjects, &keys, dRMatch_));
+          }
+        }
+      }
+    }
+
+    //std::cout << saveObj << std::endl;
+    if (saveObj)
+      outColRef->push_back(ref);
+  }
+
+  iEvent.put(std::move(outColRef));
+}
+
+
 template<>
 bool MiniAODTriggerCandProducer<pat::Electron, pat::TriggerObjectStandAlone>::onlineOfflineMatching(pat::ElectronRef ref, 
 												    const std::vector<pat::TriggerObjectStandAlone>* triggerObjects, 
@@ -174,6 +281,8 @@ bool MiniAODTriggerCandProducer<reco::RecoEcalCandidate, pat::TriggerObjectStand
 
   return false;
 }
+typedef MiniAODTriggerCandProducer<pat::Electron, trigger::TriggerObject> PatElectronhltTriggerCandProducer;
+DEFINE_FWK_MODULE(PatElectronhltTriggerCandProducer);
 
 typedef MiniAODTriggerCandProducer<reco::GsfElectron, trigger::TriggerObject> GsfElectronTriggerCandProducer;
 DEFINE_FWK_MODULE(GsfElectronTriggerCandProducer);
