@@ -27,10 +27,9 @@ options['DoRECO']               = cms.bool( False )
 options['DoEleID']              = cms.bool( False )
 options['DoPhoID']              = cms.bool( False )
 
-options['OUTPUT_FILE_NAME']     = 'tnp_data.root'
 options['OUTPUTEDMFILENAME']    = 'edmFile.root'
 options['DEBUG']                = cms.bool(False)
-options['isMC']                 = cms.bool(False)
+options['isMC']                 = cms.bool(True)
 options['UseCalibEn']           = cms.bool(False)
 
 options['addSUSY']               = cms.bool(False)
@@ -38,12 +37,14 @@ if options['useAOD']:
     options['addSUSY']               = cms.bool(False)
 
 if options['isMC']:
+    options['OUTPUT_FILE_NAME']     = 'tnp_mc.root'
     options['TnPPATHS']            = cms.vstring("HLT_Ele35_WPTight_Gsf_v*")
     options['TnPHLTTagFilters']    = cms.vstring("hltEle35noerWPTightGsfTrackIsoFilter")
     options['TnPHLTProbeFilters']  = cms.vstring()
     options['HLTFILTERTOMEASURE']  = cms.vstring()
     options['GLOBALTAG']           = '100X_upgrade2018_realistic_v10'
 else:
+    options['OUTPUT_FILE_NAME']     = 'tnp_data.root'
     options['TnPPATHS']            = cms.vstring("HLT_Ele35_WPTight_Gsf_v*")
     options['TnPHLTTagFilters']    = cms.vstring("hltEle35noerWPTightGsfTrackIsoFilter")
     options['TnPHLTProbeFilters']  = cms.vstring()
@@ -61,8 +62,9 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring(
-                                      'root://cms-xrd-global.cern.ch//store/data/Run2018A/EGamma/MINIAOD/PromptReco-v1/000/315/488/00000/00ADBC28-B74E-E811-829C-FA163EE52637.root',
-                                      'root://cms-xrd-global.cern.ch//store/data/Run2018A/EGamma/MINIAOD/PromptReco-v1/000/315/488/00000/020847B9-DA4E-E811-AF5B-FA163EA984DF.root',
+                                      #'root://cms-xrd-global.cern.ch//store/data/Run2018A/EGamma/MINIAOD/PromptReco-v1/000/315/488/00000/00ADBC28-B74E-E811-829C-FA163EE52637.root',
+                                      #'root://cms-xrd-global.cern.ch//store/data/Run2018A/EGamma/MINIAOD/PromptReco-v1/000/315/488/00000/020847B9-DA4E-E811-AF5B-FA163EA984DF.root',
+                                      'root://cms-xrd-global.cern.ch//store/mc/RunIISpring18MiniAOD/DYToEE_M-50_NNPDF31_13TeV-powheg-pythia8/MINIAODSIM/100X_upgrade2018_realistic_v10-v1/60000/40B6A18F-482D-E811-8552-EC0D9A0B3180.root',
   ),
 )
 
@@ -121,7 +123,12 @@ process.tnpEleTrig = cms.EDAnalyzer("TagProbeFitTreeProducer",
                                     probeMatches  = cms.InputTag("genProbeEle"),
                                     allProbes     = cms.InputTag("probeEle"),
                                     flags = cms.PSet(
+                                        passHcalIsoLeg1        = cms.InputTag("probeElePassHcalIsoLeg1"),
+                                        passPixelMatchLeg1        = cms.InputTag("probeElePassPixelMatchLeg1"),
                                         passTrackIsoLeg1        = cms.InputTag("probeElePassTrackIsoLeg1"),
+
+                                        passHcalIsoLeg2        = cms.InputTag("probeElePassHcalIsoLeg2"),
+                                        passPixelMatchLeg2        = cms.InputTag("probeElePassPixelMatchLeg2"),
                                         passTrackIsoLeg2        = cms.InputTag("probeElePassTrackIsoLeg2"),
 
                                         passPMS2SeededFilterDouble33 = cms.InputTag("probeElePassPMS2SeededFilterDouble33"),

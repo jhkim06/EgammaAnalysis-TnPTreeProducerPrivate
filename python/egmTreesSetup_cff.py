@@ -49,18 +49,55 @@ def setTagsProbes(process, options):
 
     #### Ele32WPTight
     FilterPre_Ele32WPTight = "hltEle32WPTight"
+
+    l1tFilt_Ele32WPTight = "hltEGL1SingleEGOrFilter"
+    l1tEtFilt_Ele32WPTight = "hltEG32L1SingleEGOrEtFilter"
+
+    process.probeElePassL1TEle32WPTight               = process.probeElePassHLT.clone()
+    process.probeElePassL1TEle32WPTight.filterNames   = cms.vstring(l1tFilt_Ele32WPTight)
+
+    process.probeElePassL1TEtEle32WPTight               = process.probeElePassHLT.clone()
+    process.probeElePassL1TEtEle32WPTight.filterNames   = cms.vstring(l1tEtFilt_Ele32WPTight)
+
+    process.probeElePassHcalIsoEle32WPTight               = process.probeElePassHLT.clone()
+    process.probeElePassHcalIsoEle32WPTight.filterNames   = cms.vstring(FilterPre_Ele32WPTight+"HcalIsoFilter")
+
+    process.probeElePassPixelMatchEle32WPTight               = process.probeElePassHLT.clone()
+    process.probeElePassPixelMatchEle32WPTight.filterNames   = cms.vstring(FilterPre_Ele32WPTight+"PixelMatchFilter")
+
+    process.probeElePassPMS2Ele32WPTight               = process.probeElePassHLT.clone()
+    process.probeElePassPMS2Ele32WPTight.filterNames   = cms.vstring(FilterPre_Ele32WPTight+"PMS2Filter")
+
     process.probeElePassGsfTrackIsoEle32WPTight               = process.probeElePassHLT.clone()
     process.probeElePassGsfTrackIsoEle32WPTight.filterNames   = cms.vstring(FilterPre_Ele32WPTight+"GsfTrackIsoFilter")
 
     #### Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v
     FilterPre = "hltEle23Ele12CaloIdLTrackIdLIsoVL"
     Leg1Post = "Leg1Filter"
+    HcalIsoLeg1Filter = FilterPre + "HcalIso" + Leg1Post
+    PixelMatchLeg1Filter = FilterPre + "PixelMatch" + Leg1Post
     TrackIsoLeg1Filter = FilterPre + "TrackIso" + Leg1Post
+
+    process.probeElePassHcalIsoLeg1               = process.probeElePassHLT.clone()
+    process.probeElePassHcalIsoLeg1.filterNames   = cms.vstring(HcalIsoLeg1Filter)
+
+    process.probeElePassPixelMatchLeg1               = process.probeElePassHLT.clone()
+    process.probeElePassPixelMatchLeg1.filterNames   = cms.vstring(PixelMatchLeg1Filter)
+
     process.probeElePassTrackIsoLeg1               = process.probeElePassHLT.clone()
     process.probeElePassTrackIsoLeg1.filterNames   = cms.vstring(TrackIsoLeg1Filter)
 
     Leg2Post = "Leg2Filter"
     TrackIsoLeg2Filter = FilterPre + "TrackIso" + Leg2Post
+    HcalIsoLeg2Filter = FilterPre + "HcalIso" + Leg2Post
+    PixelMatchLeg2Filter = FilterPre + "PixelMatch" + Leg2Post
+
+    process.probeElePassHcalIsoLeg2               = process.probeElePassHLT.clone()
+    process.probeElePassHcalIsoLeg2.filterNames   = cms.vstring(HcalIsoLeg2Filter)
+
+    process.probeElePassPixelMatchLeg2               = process.probeElePassHLT.clone()
+    process.probeElePassPixelMatchLeg2.filterNames   = cms.vstring(PixelMatchLeg2Filter)
+
     process.probeElePassTrackIsoLeg2               = process.probeElePassHLT.clone()
     process.probeElePassTrackIsoLeg2.filterNames   = cms.vstring(TrackIsoLeg2Filter)
 
@@ -239,11 +276,23 @@ def setSequences(process, options):
         process.probePho                
         )
 
-    process.hlt_sequence = cms.Sequence(  process.probeElePassTrackIsoLeg1
+    process.hlt_sequence = cms.Sequence(  
+                                        process.probeElePassHcalIsoLeg1
+                                        + process.probeElePassPixelMatchLeg1
+                                        + process.probeElePassTrackIsoLeg1
+                                        + process.probeElePassHcalIsoLeg2
+                                        + process.probeElePassPixelMatchLeg2
                                         + process.probeElePassTrackIsoLeg2
+
                                         + process.probeElePassPMS2SeededFilterDouble33
                                         + process.probeElePassPMS2UnseededFilterDouble33
-                                        + process.probeElePassGsfTrackIsoEle32WPTight
+
+                                        +process.probeElePassL1TEle32WPTight        
+                                        +process.probeElePassL1TEtEle32WPTight        
+                                        +process.probeElePassHcalIsoEle32WPTight    
+                                        +process.probeElePassPixelMatchEle32WPTight 
+                                        +process.probeElePassPMS2Ele32WPTight       
+                                        +process.probeElePassGsfTrackIsoEle32WPTight
     )
 
     if options['isMC'] :
