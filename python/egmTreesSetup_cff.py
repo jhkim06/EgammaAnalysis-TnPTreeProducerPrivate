@@ -35,13 +35,13 @@ def setTagsProbes(process, options):
                                         isAND       = cms.bool(True)
                                     )
 
-    process.probeElePassL1seed = cms.EDProducer("PatElectronL1CandProducer",
-                                        inputs      = cms.InputTag("tagEleCutBasedTight"),
-                                        isoObjects     = cms.InputTag("hltL1sSingleAndDoubleEG"),
-                                        nonIsoObjects     = cms.InputTag("hltL1sSingleAndDoubleEG"),
-                                        dRmatch          = cms.double(0.2),
-                                        minET       = cms.double(25.)
-                                    )
+    #process.probeElePassL1seed = cms.EDProducer("PatElectronL1CandProducer",
+    #                                    inputs      = cms.InputTag("tagEleCutBasedTight"),
+    #                                    isoObjects     = cms.InputTag("hltL1sSingleAndDoubleEG"),
+    #                                    nonIsoObjects     = cms.InputTag("hltL1sSingleAndDoubleEG"),
+    #                                    dRmatch          = cms.double(0.2),
+    #                                    minET       = cms.double(25.)
+    #                                )
 
     ##################### PROBE ELECTRONs ###########################
     process.probeEle             = process.tagEle.clone()
@@ -53,6 +53,13 @@ def setTagsProbes(process, options):
     process.probeElePassHLT.inputs       = cms.InputTag("probeEle")  
     process.probeElePassHLT.filterNames  = cms.vstring(options['HLTFILTERTOMEASURE'])
     process.probeElePassHLT.isAND        = cms.bool(False)
+
+
+    ## hltL1sSingleAndDoubleEG
+    process.probeElePassL1seed              = process.tagEle.clone()
+    process.probeElePassL1seed.inputs       = cms.InputTag("probeEle")
+    process.probeElePassL1seed.filterNames  = cms.vstring("hltL1sSingleAndDoubleEG")
+    process.probeElePassL1seed.isAND        = cms.bool(False)
 
     ## HLT_Ele23_Ele12 leg1
     process.probeElePassHLTEle23Ele12leg1              = process.tagEle.clone()
