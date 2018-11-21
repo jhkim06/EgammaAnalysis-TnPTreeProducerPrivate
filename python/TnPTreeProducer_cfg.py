@@ -353,10 +353,10 @@ if (not options['DEBUG']):
     process.outpath.remove(process.out)
 
 process.p = cms.Path(
-        cms.ignore(process.hltGetConditions) +
-        cms.ignore(process.hltGetRaw) +
-        cms.ignore(process.hltBoolFalse) +
-        cms.ignore(process.hltL1sSingleAndDoubleEG) +
+        #cms.ignore(process.hltGetConditions) +
+        #cms.ignore(process.hltGetRaw) +
+        #cms.ignore(process.hltBoolFalse) +
+        #cms.ignore(process.hltL1sSingleAndDoubleEG) +
         process.hltFilter         +
         process.cand_sequence     + 
         process.tnpPairs_sequence +
