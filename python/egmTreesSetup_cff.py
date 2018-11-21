@@ -35,6 +35,14 @@ def setTagsProbes(process, options):
                                         isAND       = cms.bool(True)
                                     )
 
+    process.probeElePassL1seed = cms.EDProducer("PatElectronL1CandProducer",
+                                        inputs      = cms.InputTag("tagEleCutBasedTight"),
+                                        isoObjects     = cms.InputTag("hltL1sSingleAndDoubleEG"),
+                                        nonIsoObjects     = cms.InputTag("hltL1sSingleAndDoubleEG"),
+                                        dRmatch          = cms.double(0.2),
+                                        minET       = cms.double(25.)
+                                    )
+
     ##################### PROBE ELECTRONs ###########################
     process.probeEle             = process.tagEle.clone()
     process.probeEle.filterNames = cms.vstring(options['TnPHLTProbeFilters'])
@@ -45,6 +53,26 @@ def setTagsProbes(process, options):
     process.probeElePassHLT.inputs       = cms.InputTag("probeEle")  
     process.probeElePassHLT.filterNames  = cms.vstring(options['HLTFILTERTOMEASURE'])
     process.probeElePassHLT.isAND        = cms.bool(False)
+
+    ## HLT_Ele23_Ele12 leg1
+    process.probeElePassHLTEle23Ele12leg1              = process.tagEle.clone()
+    process.probeElePassHLTEle23Ele12leg1.inputs       = cms.InputTag("probeEle")
+    process.probeElePassHLTEle23Ele12leg1.filterNames  = cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter")
+    process.probeElePassHLTEle23Ele12leg1.isAND        = cms.bool(False)
+
+    ## HLT_Ele23_Ele12 leg2
+    process.probeElePassHLTEle23Ele12leg2              = process.tagEle.clone()
+    process.probeElePassHLTEle23Ele12leg2.inputs       = cms.InputTag("probeEle")
+    process.probeElePassHLTEle23Ele12leg2.filterNames  = cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter")
+    process.probeElePassHLTEle23Ele12leg2.isAND        = cms.bool(False)
+
+    ## HLT_Ele23_Ele12 DZ
+    process.probeElePassHLTEle23Ele12DZ              = process.tagEle.clone()
+    process.probeElePassHLTEle23Ele12DZ.inputs       = cms.InputTag("probeEle")
+    process.probeElePassHLTEle23Ele12DZ.filterNames  = cms.vstring("hltEle23Ele12CaloIdLTrackIdLIsoVLDZFilter")
+    process.probeElePassHLTEle23Ele12DZ.isAND        = cms.bool(False)
+
+
 
     ###################### PROBE PHOTONs ############################
     process.probePho  = cms.EDProducer( gamHLTProducer,
@@ -191,7 +219,13 @@ def setSequences(process, options):
         process.probePho                
         )
 
-    process.hlt_sequence = cms.Sequence( process.probeElePassHLT )
+    process.hlt_sequence = cms.Sequence( 
+        process.probeElePassHLT +
+        cms.ignore(process.probeElePassL1seed) + 
+        process.probeElePassHLTEle23Ele12leg1 
+        #process.probeElePassHLTEle23Ele12leg2 +
+        #process.probeElePassHLTEle23Ele12DZ 
+        )
 
     if options['isMC'] :
         process.tag_sequence += process.genEle + process.genTagEle 
