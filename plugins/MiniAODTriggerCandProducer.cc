@@ -121,7 +121,6 @@ bool MiniAODTriggerCandProducer<pat::Electron, pat::TriggerObjectStandAlone>::on
 												    const std::vector<pat::TriggerObjectStandAlone>* triggerObjects, 
 												    std::string filterLabel, float dRmin) {
  
-  std::cout << "called" << std::endl; 
   for (pat::TriggerObjectStandAlone obj : *triggerObjects) { 
     //obj.unpackPathNames(triggerNames); 
     if (obj.hasFilterLabel(filterLabel)) {

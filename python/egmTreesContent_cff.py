@@ -21,6 +21,13 @@ SCProbeVariablesToStore = cms.PSet(
     )
 
 EleProbeVariablesToStore = cms.PSet(
+
+    # L1 info
+    el_l1_e          = cms.InputTag("eleVarHelper:l1e"),
+    el_l1_et         = cms.InputTag("eleVarHelper:l1et"),
+    el_l1_eta        = cms.InputTag("eleVarHelper:l1eta"),
+    el_l1_phi        = cms.InputTag("eleVarHelper:l1phi"),
+
     el_eta    = cms.string("eta"),
     el_phi    = cms.string("phi"),
     el_abseta = cms.string("abs(eta)"),

@@ -101,8 +101,7 @@ options['SUPERCLUSTER_CUTS']    = "abs(eta)<2.5 &&  et>5.0"
 options['PHOTON_CUTS']          = "(abs(-log(tan(superCluster.position.theta/2)))<=2.5) && pt> 10"
 options['ELECTRON_TAG_CUTS']    = "(abs(-log(tan(superCluster.position.theta/2)))<=2.1) && !(1.4442<=abs(-log(tan(superClusterPosition.theta/2)))<=1.566) && pt >= 30.0"
 
-#options['MAXEVENTS']            = cms.untracked.int32(varOptions.maxEvents) 
-options['MAXEVENTS']            = cms.untracked.int32(1000) 
+options['MAXEVENTS']            = cms.untracked.int32(varOptions.maxEvents) 
 options['DoTrigger']            = cms.bool( varOptions.doTrigger )
 options['DoRECO']               = cms.bool( varOptions.doRECO    )
 options['DoEleID']              = cms.bool( varOptions.doEleID   )
@@ -174,7 +173,7 @@ tnpSetup.setupTreeMaker(process,options)
 process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
 process.MessageLogger.cerr.threshold = ''
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = options['INPUT_FILE_NAME'],
@@ -220,6 +219,9 @@ process.tnpEleTrig = cms.EDAnalyzer("TagProbeFitTreeProducer",
                                         passingHLTEle23Ele12leg1   = cms.InputTag("probeElePassHLTEle23Ele12leg1" ),
                                         passingHLTEle23Ele12leg2   = cms.InputTag("probeElePassHLTEle23Ele12leg2" ),
                                         passingHLTEle23Ele12DZ   = cms.InputTag("probeElePassHLTEle23Ele12DZ" ),
+                                        passingLoose80X   = cms.InputTag("probeEleCutBasedLoose80X" ),
+                                        passingMedium80X  = cms.InputTag("probeEleCutBasedMedium80X"),
+                                        passingTight80X   = cms.InputTag("probeEleCutBasedTight80X" ),
                                         ),
                                     )
 
@@ -285,7 +287,6 @@ if (options['DoRECO'])   : process.tree_sequence *= process.tnpEleReco
 if (options['DoEleID'])  : process.tree_sequence *= process.tnpEleIDs
 if (options['DoPhoID'])  : process.tree_sequence *= process.tnpPhoIDs
 
-
 ##########################################################################
 ## PATHS
 ##########################################################################
@@ -298,12 +299,6 @@ if (not options['DEBUG']):
     process.outpath.remove(process.out)
 
 process.p = cms.Path(
-        #cms.ignore(process.hltGetConditions) +
-        #cms.ignore(process.hltGetRaw) +
-        #cms.ignore(process.hltBoolFalse) +
-        #cms.ignore(process.hltGtStage2Digis) +
-        #cms.ignore(process.hltGtStage2ObjectMap) +
-        #cms.ignore(process.hltL1sSingleAndDoubleEG) +
         process.hltFilter         +
         process.cand_sequence     + 
         process.tnpPairs_sequence +
