@@ -78,7 +78,7 @@ varOptions.register(
     )
 
 varOptions.register(
-    "isAOD", True,
+    "isAOD", False,
     VarParsing.multiplicity.singleton,
     VarParsing.varType.bool,
     "use AOD"
@@ -161,8 +161,15 @@ if varOptions.GT != "auto" :
 ###################################################################
 ## Define input files for test local run
 ###################################################################
-from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesMiniAOD_Preliminary2018 as inputs
-if options['useAOD'] : from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesAOD_Preliminary2017 as inputs #
+#from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesMiniAOD_Preliminary2018 as inputs
+#if options['useAOD'] : from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesAOD_Preliminary2017 as inputs #
+
+process.source = cms.Source("PoolSource",
+    fileNames = cms.untracked.vstring(
+                                      'root://cms-xrd-global.cern.ch//store/data/Run2018A/EGamma/MINIAOD/PromptReco-v1/000/315/488/00000/00ADBC28-B74E-E811-829C-FA163EE52637.root',
+                                      'root://cms-xrd-global.cern.ch//store/data/Run2018A/EGamma/MINIAOD/PromptReco-v1/000/315/488/00000/020847B9-DA4E-E811-AF5B-FA163EA984DF.root',
+  ),
+)
 
 #if options['useAOD'] : 
 #from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesAOD_Preliminary2017 as inputs #switch to 2017 samples if want to cmsRun on AOD
@@ -170,8 +177,8 @@ if options['useAOD'] : from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles
 #from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesMiniAOD_2016 as inputs #switch to 2017 samples if want to cmsRun on AOD
 #if options['useAOD'] : from EgammaAnalysis.TnPTreeProducer.etc.tnpInputTestFiles_cff import filesAOD_empty as inputs #switch to 2017 samples if want to cmsRun on AOD
     
-options['INPUT_FILE_NAME'] = inputs['data']
-if varOptions.isMC:  options['INPUT_FILE_NAME'] =  inputs['mc']
+#options['INPUT_FILE_NAME'] = inputs['data']
+#if varOptions.isMC:  options['INPUT_FILE_NAME'] =  inputs['mc']
 
 #for file in open("file.list").readlines():
 #    inputs['data'].append(file.strip())
@@ -204,9 +211,9 @@ process.options   = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) 
 process.MessageLogger.cerr.threshold = ''
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-process.source = cms.Source("PoolSource",
-                            fileNames = options['INPUT_FILE_NAME'],
-                            )
+#process.source = cms.Source("PoolSource",
+#                            fileNames = options['INPUT_FILE_NAME'],
+#                            )
 process.maxEvents = cms.untracked.PSet( input = options['MAXEVENTS'])
 #process.maxEvents = cms.untracked.PSet(
 #    input = cms.untracked.int32(options['MAXEVENTS'] )
@@ -248,10 +255,21 @@ process.tnpEleTrig = cms.EDAnalyzer("TagProbeFitTreeProducer",
                                     probeMatches  = cms.InputTag("genProbeEle"),
                                     allProbes     = cms.InputTag("probeEle"),
                                     flags = cms.PSet(
-                                        passingHLT        = cms.InputTag("probeElePassHLT"),
-                                        passingLoose94X   = cms.InputTag("probeEleCutBasedLoose94X" ),
-                                        passingMedium94X  = cms.InputTag("probeEleCutBasedMedium94X"),
-                                        passingTight94X   = cms.InputTag("probeEleCutBasedTight94X" ),
+                                        passL125seed        = cms.InputTag("probeElePassL125seed"),
+                                        passL112seed        = cms.InputTag("probeElePassL112seed"),
+                                        passL1TEle23Ele12        = cms.InputTag("probeElePassL1T"),
+                                        passEtLeg1Ele23Ele12        = cms.InputTag("probeElePassEtLeg1"),
+                                        passTrackIsoLeg1Ele23Ele12        = cms.InputTag("probeElePassTrackIsoLeg1"),
+
+                                        passEtLeg2Ele23Ele12        = cms.InputTag("probeElePassEtLeg2"),
+                                        passTrackIsoLeg2Ele23Ele12        = cms.InputTag("probeElePassTrackIsoLeg2"),
+
+                                        passL1TEle32WPTight = cms.InputTag("probeElePassL1TEle32WPTight"),
+                                        passL1TEtEle32WPTight = cms.InputTag("probeElePassL1TEtEle32WPTight"),
+                                        passGsfTrackIsoEle32WPTight = cms.InputTag("probeElePassGsfTrackIsoEle32WPTight"),
+
+                                        passPMS2SeededFilterDouble33 = cms.InputTag("probeElePassPMS2SeededFilterDouble33"),
+                                        passPMS2UnseededFilterDouble33 = cms.InputTag("probeElePassPMS2UnseededFilterDouble33"),
                                         ),
                                     )
 
